@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
 
 export default function Home() {
-  const user = auth.currentUser;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (!user) navigate("/login");
+  }, [navigate]);
+
+  const logout = async () => {
+    await signOut(auth);
+    navigate("/login");
+  };
 
   return (
     <div>
-      <h2>Welcome, {user?.email}</h2>
-      <button onClick={() => { auth.signOut(); window.location.reload() }}>
-        Logout
-      </button>
+      <h1>Home Page</h1>
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }
