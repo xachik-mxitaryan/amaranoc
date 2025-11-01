@@ -20,9 +20,12 @@ export default function Navbar() {
   ];
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (!user) navigate("/login");
-  }, [navigate]);
+  const user = auth.currentUser;
+
+  if (!user && location.pathname !== "/register") {
+    navigate("/login");
+  }
+}, [navigate, location]);
 
   const logout = async () => {
     await signOut(auth);
