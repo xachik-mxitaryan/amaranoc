@@ -1,9 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDVF9xGIj9tV9XWW4zpNUOYOGZXeHh8O6k",
   authDomain: "amaranoc-f7e26.firebaseapp.com",
+  databaseURL: "https://amaranoc-f7e26-default-rtdb.firebaseio.com",
   projectId: "amaranoc-f7e26",
   storageBucket: "amaranoc-f7e26.firebasestorage.app",
   messagingSenderId: "158700341874",
@@ -13,4 +15,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
+
 export default app;
