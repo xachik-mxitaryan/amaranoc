@@ -98,11 +98,11 @@ export default function index() {
           ՀԱՏՈՒԿ ԶԵՂՉԵՐ
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-10 gap-8">
           {discounts.map((item, index) => (
             <div
               key={index}
-              className="relative rounded-xl overflow-hidden shadow-lg h-96 group"
+              className="relative rounded-xl overflow-hidden shadow-lg h-75 group"
             >
               <img
                 src={item.img}

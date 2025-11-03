@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Header from './commponents/home/header'
 import Cheap from './pages/Cheap'
 import Footer from './commponents/home/footer'
+import Service from "./pages/Service";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sales" element={<Cheap />} />
+        <Route path="/services" element={<Service />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
