@@ -136,7 +136,7 @@ export default function index() {
                 <p>90,000֏</p>
             </div>
         </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8'>
+        <div className='grid grid-cols-1 items-center justify-center w-full sm:grid-cols-2 lg:grid-cols-3 gap-8'>
             <div>
                 <img src="https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1712326262412--0.25440242535580326image.webp&w=1920&q=75" alt="" />
                 <p>Նոր Հաճն</p>
@@ -153,8 +153,12 @@ export default function index() {
                 <p>140,000֏</p>
             </div>
         </div>
-        <button className='flex items-center justify-center px-10 py-3 bg-orange-600 text-white font-semibold rounded-full shadow-md transition text-lg'>
+        <button className='flex mt-10 w-full items-center justify-center '>
+
+          <div className='px-10 py-3 bg-orange-600 text-white font-semibold rounded-full shadow-md transition text-lg'>
+
             Ցուցադրել ավելին
+          </div>
         </button>
        </div>
         </div>
