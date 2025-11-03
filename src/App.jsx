@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Header from './commponents/home/header'
-import Cheap from './commponents/cheap'
+import Cheap from './pages/Cheap'
 import Footer from './commponents/home/footer'
 
 export default function App() {
