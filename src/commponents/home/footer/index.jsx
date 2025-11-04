@@ -5,7 +5,7 @@ export default function index() {
   return (
     <>
       <footer>
-        <div className="mt-50 flex items-center justify-center w-full h-auto py-8 bg-[url(https://amaranoc.am/images/footer/home-add-application.png)] bg-cover bg-center">
+        <div className="mt-50 flex items-center justify-center w-full h-auto py-20 bg-[url(https://amaranoc.am/images/footer/home-add-application.png)] bg-cover bg-center">
           <div className="w-[65%] lg:w-[80%] md:w-[90%] h-auto opacity-80 bg-[#283333] rounded-3xl flex flex-col items-center justify-center shadow-lg px-4 py-10">
 
             <div className="flex items-center justify-center w-full mb-4">
