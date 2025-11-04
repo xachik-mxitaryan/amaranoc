@@ -1,7 +1,9 @@
+// ✅ Firebase Initialization
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getDatabase, ref, get } from "firebase/database"; // ✅ Only one import for these
 
+// ✅ Your Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyDVF9xGIj9tV9XWW4zpNUOYOGZXeHh8O6k",
   authDomain: "amaranoc-f7e26.firebaseapp.com",
@@ -13,8 +15,15 @@ const firebaseConfig = {
   measurementId: "G-4Y1MJEYCVH"
 };
 
+// ✅ Initialize Firebase App
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
 
+// ✅ Initialize Services
+export const auth = getAuth(app);
+export const dbRealtime = getDatabase(app); // renamed to avoid confusion with Firestore
+
+// ✅ Export useful functions
+export { ref, get };
+
+// ✅ Default export
 export default app;
