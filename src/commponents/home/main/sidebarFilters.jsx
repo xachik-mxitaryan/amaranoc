@@ -20,6 +20,14 @@ export default function SidebarFilters({
     "Կոտայք",
     "Լոռի",
     "Շիրակ",
+    "Էջմիածին",
+    "Աբովյան",
+    "Շահումյան",
+    "Մասիս",
+    "Վանաձոր",
+    "Գյումրի",
+    "Ստեփանավան",
+    "Սևան",
   ];
 
   const toggleRegion = (region) => {
@@ -41,7 +49,6 @@ export default function SidebarFilters({
 
   return (
     <div className="w-64 bg-white shadow rounded-xl p-4 space-y-6">
-      {/* Region Filter */}
       <div>
         <h3 className="text-sm font-semibold text-gray-700 mb-2">Տարածաշրջան</h3>
         <div className="space-y-2">
@@ -62,7 +69,6 @@ export default function SidebarFilters({
         </div>
       </div>
 
-      {/* Price Filter */}
       <div>
         <h3 className="text-sm font-semibold text-gray-700 mb-2">Գին</h3>
         <div className="flex items-center gap-2">
@@ -84,21 +90,21 @@ export default function SidebarFilters({
         </div>
       </div>
 
-      {/* People Filter */}
       <div>
         <h3 className="text-sm font-semibold text-gray-700 mb-2">
           Մարդկանց թույլատրելի քանակ
         </h3>
+        <button className="size-10 w-2.5rem h-2.5rem bg-gray-200 rounded-4xl">-</button>
         <input
           type="number"
           value={people || ""}
           onChange={(e) => setPeople(e.target.value)}
           placeholder="Քանակ"
-          className="w-24 border rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500"
+          className="w-10 border rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500"
         />
+        <button className="size-10 w-2.5rem h-2.5rem bg-gray-200 rounded-4xl">+</button>
       </div>
 
-      {/* Room Filter */}
       <div>
         <h3 className="text-sm font-semibold text-gray-700 mb-2">
           Սենյակների քանակը
@@ -108,18 +114,56 @@ export default function SidebarFilters({
             <button
               key={num}
               onClick={() => handleRoomClick(num)}
-              className={`px-3 py-1 text-sm rounded-full border ${
-                rooms === num
+              className={`px-3 py-1 text-sm rounded-full border ${rooms === num
                   ? "bg-indigo-600 text-white border-indigo-600"
                   : "border-gray-300 text-gray-700 hover:bg-indigo-50 hover:border-indigo-400"
-              }`}
+                }`}
             >
               {num}
             </button>
           ))}
         </div>
       </div>
-
+      <div>
+        <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          Սանհանգույցների  քանակը
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {["Բոլորը", 1, 2, "3+"].map((num) => (
+            <button
+              key={num}
+              onClick={() => handleRoomClick(num)}
+              className={`px-3 py-1 text-sm rounded-full border ${rooms === num
+                  ? "bg-indigo-600 text-white border-indigo-600"
+                  : "border-gray-300 text-gray-700 hover:bg-indigo-50 hover:border-indigo-400"
+                }`}
+            >
+              {num}
+            </button>
+          ))}
+        </div>
+      </div>
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+          Լողավազան
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {["Բոլորը","Բաց","Փակ","Տաքացվող","Առանց լողավազանի"].map((num) => (
+            <button
+              key={num}
+              onClick={() => handleRoomClick(num)}
+              className={`px-3 py-1 text-sm rounded-full border ${rooms === num
+                  ? "bg-indigo-600 text-white border-indigo-600"
+                  : "border-gray-300 text-gray-700 hover:bg-indigo-50 hover:border-indigo-400"
+                }`}
+            >
+              {num}
+            </button>
+            
+          ))}
+          
+        </div>
+          </div>
       <div>
         <button
           onClick={applyFilters}
