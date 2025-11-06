@@ -244,7 +244,7 @@ export default function ServicesBlock() {
             className="rounded-xl bg-white shadow-xl overflow-hidden"
           >
             <img className="w-full h-56 object-cover" src={item.img} alt="" />
-            <div className="p-6">
+            <div className="p-6 text-[#575b65]">
               <h3 className="text-lg font-bold mb-2">{item.title}</h3>
               <p className="text-gray-600 text-sm mb-4">{item.body}</p>
 
