@@ -1,207 +1,252 @@
+// src/components/SidebarFilters.jsx
 import React from "react";
+import { FaPlus, FaMinus } from "react-icons/fa";
 
-export default function SidebarFilters({
-  location,
-  setLocation,
-  price,
-  setPrice,
-  people,
-  setPeople,
-  rooms,
-  setRooms,
-  applyFilters,
-}) {
-  const regions = [
-    "Երևան",
-    "Արագածոտն",
-    "Արարատ",
-    "Արմավիր",
-    "Գեղարքունիք",
-    "Կոտայք",
-    "Լոռի",
-    "Շիրակ",
-    "Էջմիածին",
-    "Աբովյան",
-    "Շահումյան",
-    "Մասիս",
-    "Վանաձոր",
-    "Գյումրի",
-    "Ստեփանավան",
-    "Սևան",
-  ];
+/*
+ Props:
+  - filters (object)
+  - setFilters (fn)
+  - homes (array)
+  - regionsList (array)
+  - resetFilters (fn)
+*/
 
+const PRIMARY = "#53079d";
+
+const Chip = ({ active, onClick, children }) => (
+  <button
+    onClick={onClick}
+    className={`px-3 py-1 rounded-full text-sm border transition min-w-[44px] text-center ${
+      active ? `bg-[${PRIMARY}] text-white border-[${PRIMARY}]` : `bg-white text-[${PRIMARY}] border-gray-200 hover:bg-purple-50`
+    }`}
+  >
+    {children}
+  </button>
+);
+
+export default function SidebarFilters({ filters, setFilters, homes, regionsList = [], resetFilters }) {
+  // Advantages candidates (you can keep or derive from DB)
+  const advantagesList = Array.from(new Set(homes.flatMap(h => h.advantages || [])));
+  // pool options
+  const poolOptions = ["Փակ", "Բաց", "Տաքացվող"];
+  // rooms and toilets chips
+  const roomOptions = [1, 2, 3, 4, 5, 6];
+  const toiletOptions = [1, 2, 3, 4];
+
+  // toggle region in filters.regions (array)
   const toggleRegion = (region) => {
-    setLocation((prev) =>
-      prev.includes(region)
-        ? prev.filter((r) => r !== region)
-        : [...prev, region]
-    );
+    const arr = filters.regions || [];
+    const next = arr.includes(region) ? arr.filter(r => r !== region) : [...arr, region];
+    setFilters({ ...filters, regions: next });
   };
 
-  const handlePriceChange = (e, type) => {
-    const value = e.target.value;
-    setPrice((prev) => ({ ...prev, [type]: value }));
+  const toggleAdvantage = (adv) => {
+    const arr = filters.advantages || [];
+    const next = arr.includes(adv) ? arr.filter(a => a !== adv) : [...arr, adv];
+    setFilters({ ...filters, advantages: next });
   };
 
-  const handleRoomClick = (num) => {
-    setRooms(num === "Բոլորը" ? null : num);
+  const toggleChipValue = (key, value) => {
+    // if same -> clear, else set value
+    setFilters(prev => ({ ...prev, [key]: prev[key] === value ? null : value }));
+  };
+
+  const setNumeric = (key, val) => {
+    setFilters(prev => ({ ...prev, [key]: val === "" ? null : Number(val) }));
+  };
+
+  const incDec = (key, inc = 1) => {
+    const cur = Number(filters[key] || 0);
+    const next = Math.max(0, cur + inc);
+    setFilters(prev => ({ ...prev, [key]: next || null }));
   };
 
   return (
-    <div className="w-64 bg-white shadow rounded-xl p-4 space-y-6">
-      <div>
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">Տարածաշրջան</h3>
-        <div className="space-y-2">
-          {regions.map((region) => (
-            <label
-              key={region}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-800 cursor-pointer"
-            >
+    <aside className="w-72 bg-white rounded-2xl p-5 shadow border">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold text-[#53079d]">Ֆիլտրեր</h3>
+        <button
+          onClick={resetFilters}
+          className="text-sm text-gray-500 hover:text-gray-700"
+        >
+          Սկիզբ
+        </button>
+      </div>
+
+      {/* Regions (multiple checkboxes) */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Տարածաշրջան</div>
+        <div className="space-y-1 max-h-36 overflow-auto pr-1">
+          {regionsList.length === 0 && <div className="text-xs text-gray-400">Տվյալներ լռվաց չեն</div>}
+          {regionsList.map((r, i) => (
+            <label key={i} className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
-                checked={location.includes(region)}
-                onChange={() => toggleRegion(region)}
-                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                checked={filters.regions?.includes(r)}
+                onChange={() => toggleRegion(r)}
+                className="h-4 w-4 rounded"
               />
-              {region}
+              <span>{r}</span>
             </label>
           ))}
         </div>
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">Գին</h3>
-        <div className="flex items-center gap-2">
+      {/* Price quick chips + manual */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Գին (դր․)</div>
+        <div className="flex gap-2 flex-wrap mb-2">
+          {[50000, 90000, 150000, 250000].map(v => (
+            <Chip
+              key={v}
+              active={filters.maxPrice === v}
+              onClick={() => setFilters(prev => ({ ...prev, maxPrice: prev.maxPrice === v ? 9999999 : v }))}
+            >
+              {v.toLocaleString()} ֏
+            </Chip>
+          ))}
+        </div>
+
+        <div className="flex gap-2 items-center">
           <input
             type="number"
-            placeholder="Min"
-            value={price.min || ""}
-            onChange={(e) => handlePriceChange(e, "min")}
-            className="w-20 border rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500"
+            placeholder="Мин"
+            className="w-24 border px-2 py-1 rounded"
+            value={filters.minPrice || ""}
+            onChange={e => setFilters(prev => ({ ...prev, minPrice: e.target.value ? Number(e.target.value) : 0 }))}
           />
           <span className="text-gray-400">-</span>
           <input
             type="number"
-            placeholder="Max"
-            value={price.max || ""}
-            onChange={(e) => handlePriceChange(e, "max")}
-            className="w-20 border rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500"
+            placeholder="Մաքս"
+            className="w-24 border px-2 py-1 rounded"
+            value={filters.maxPrice === 9999999 ? "" : filters.maxPrice}
+            onChange={e => setFilters(prev => ({ ...prev, maxPrice: e.target.value ? Number(e.target.value) : 9999999 }))}
           />
         </div>
       </div>
 
-      <div>
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">
-          Մարդկանց թույլատրելի քանակ
-        </h3>
-        <button className="size-10 w-2.5rem h-2.5rem bg-gray-200 rounded-4xl">-</button>
-        <input
-          type="number"
-          value={people || ""}
-          onChange={(e) => setPeople(e.target.value)}
-          placeholder="Քանակ"
-          className="w-10 border rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500"
-        />
-        <button className="size-10 w-2.5rem h-2.5rem bg-gray-200 rounded-4xl">+</button>
-      </div>
-          <div>
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">
-          Մարդկանց թույլատրելի քանակը գիշերակացով
-        </h3>
-        <button className="size-10 w-2.5rem h-2.5rem bg-gray-200 rounded-4xl">-</button>
-        <input
-          type="number"
-          value={people || ""}
-          onChange={(e) => setPeople(e.target.value)}
-          placeholder="Քանակ"
-          className="w-10 border rounded-lg px-2 py-1 text-sm focus:ring-1 focus:ring-indigo-500"
-        />
-        <button className="size-10 w-2.5rem h-2.5rem bg-gray-200 rounded-4xl">+</button>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">
-          Գիշերակացի առկայություն
-        </h3>
-          {["Բոլորը","Այո","Ոչ"].map((num) => (
-            <button
-              key={num}
-              onClick={() => handleRoomClick(num)}
-              className={`px-3 py-1 text-sm rounded-full border ${rooms === num
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "border-gray-300 text-gray-700 hover:bg-indigo-50 hover:border-indigo-400"
-                }`}
-            >
-              {num}
-            </button>
-          ))}
+      {/* People day */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Մարդկանց քանակ (Օրը)</div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => incDec("peopleDay", -1)} className="p-2 rounded-full border"><FaMinus /></button>
+          <input
+            type="number"
+            className="w-16 text-center border rounded px-2 py-1"
+            value={filters.peopleDay || ""}
+            onChange={e => setNumeric("peopleDay", e.target.value)}
+            placeholder="—"
+          />
+          <button onClick={() => incDec("peopleDay", 1)} className="p-2 rounded-full border"><FaPlus /></button>
         </div>
-      <div>
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">
-          Սենյակների քանակը
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {["Բոլորը", 1, 2, 3, 4, 5].map((num) => (
-            <button
-              key={num}
-              onClick={() => handleRoomClick(num)}
-              className={`px-3 py-1 text-sm rounded-full border ${rooms === num
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "border-gray-300 text-gray-700 hover:bg-indigo-50 hover:border-indigo-400"
-                }`}
-            >
-              {num}
-            </button>
+      </div>
+
+      {/* People night */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Մարդկանց քանակ (Գիշեր)</div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => incDec("peopleNight", -1)} className="p-2 rounded-full border"><FaMinus /></button>
+          <input
+            type="number"
+            className="w-16 text-center border rounded px-2 py-1"
+            value={filters.peopleNight || ""}
+            onChange={e => setNumeric("peopleNight", e.target.value)}
+            placeholder="—"
+          />
+          <button onClick={() => incDec("peopleNight", 1)} className="p-2 rounded-full border"><FaPlus /></button>
+        </div>
+      </div>
+
+      {/* Rooms chips */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Սենյակներ</div>
+        <div className="flex gap-2 flex-wrap">
+          {roomOptions.map(r => (
+            <Chip key={r} active={filters.rooms === r} onClick={() => toggleChipValue("rooms", r)}>
+              {r}
+            </Chip>
           ))}
         </div>
       </div>
-      <div>
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">
-          Սանհանգույցների  քանակը
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {["Բոլորը", 1, 2, "3+"].map((num) => (
-            <button
-              key={num}
-              onClick={() => handleRoomClick(num)}
-              className={`px-3 py-1 text-sm rounded-full border ${rooms === num
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "border-gray-300 text-gray-700 hover:bg-indigo-50 hover:border-indigo-400"
-                }`}
-            >
-              {num}
-            </button>
+
+      {/* Bathrooms chips */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Լոգարաններ</div>
+        <div className="flex gap-2 flex-wrap">
+          {toiletOptions.map(t => (
+            <Chip key={t} active={filters.bathrooms === t} onClick={() => toggleChipValue("bathrooms", t)}>
+              {t}
+            </Chip>
           ))}
         </div>
       </div>
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
-          Լողավազան
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {["Բոլորը","Բաց","Փակ","Տաքացվող","Առանց լողավազանի"].map((num) => (
-            <button
-              key={num}
-              onClick={() => handleRoomClick(num)}
-              className={`px-3 py-1 text-sm rounded-full border ${rooms === num
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "border-gray-300 text-gray-700 hover:bg-indigo-50 hover:border-indigo-400"
-                }`}
-            >
-              {num}
-            </button>
-            
+
+      {/* Pool chips */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Լողավազան</div>
+        <div className="flex gap-2 flex-wrap">
+          {poolOptions.map(p => (
+            <Chip key={p} active={filters.pool === p} onClick={() => toggleChipValue("pool", p)}>
+              {p}
+            </Chip>
           ))}
-          
+          <Chip active={!filters.pool} onClick={() => setFilters(prev => ({ ...prev, pool: null }))}>
+            Բոլորը
+          </Chip>
         </div>
-          </div>
-      <div>
+      </div>
+
+      {/* Sleep (yes/no) */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Գիշերելու հնարավորություն</div>
+        <div className="flex gap-2">
+          <Chip active={filters.sleep === true} onClick={() => toggleChipValue("sleep", true)}>Այո</Chip>
+          <Chip active={filters.sleep === false} onClick={() => toggleChipValue("sleep", false)}>Ոչ</Chip>
+          <Chip active={filters.sleep === null} onClick={() => setFilters(prev => ({ ...prev, sleep: null }))}>Բոլորը</Chip>
+        </div>
+      </div>
+
+      {/* Stars */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Աստղեր (min)</div>
+        <div className="flex gap-2">
+          {[1,2,3,4,5].map(s => (
+            <Chip key={s} active={filters.stars === s} onClick={() => setFilters(prev => ({ ...prev, stars: prev.stars === s ? null : s }))}>
+              {s}
+            </Chip>
+          ))}
+        </div>
+      </div>
+
+      {/* Advantages (checkbox list) */}
+      <div className="mb-4">
+        <div className="text-sm font-semibold mb-2">Հարմարություններ</div>
+        <div className="space-y-1 max-h-36 overflow-auto pr-1">
+          {advantagesList.length === 0 && <div className="text-xs text-gray-400">—</div>}
+          {advantagesList.map((a, i) => (
+            <label key={i} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={filters.advantages?.includes(a)}
+                onChange={() => toggleAdvantage(a)}
+              />
+              {a}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Reset button */}
+      <div className="mt-3">
         <button
-          onClick={applyFilters}
-          className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+          onClick={resetFilters}
+          className="w-full py-2 rounded-lg text-white"
+          style={{ backgroundColor: PRIMARY }}
         >
-          Փնտրել
+          Հեռացնել ֆիլտրները
         </button>
       </div>
-    </div>
+    </aside>
   );
 }
