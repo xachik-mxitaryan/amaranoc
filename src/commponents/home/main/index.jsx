@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import React, { useEffect, useState, useMemo } from "react";
 import SidebarFilters from "./sidebarFilters";
 import { dbRealtime, ref, get } from "../../../firebase";
@@ -9,27 +8,22 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-/*
-  Uses DB fields exactly as you provided:
-  addres, advantages (array), allSurface, baseyn (string),
-  homeSurface, id, images (array), isSleep (boolean),
-  peopleCaunt, peopleSleepCaunt, price, rooms, sleepPrice, star, tualets
-*/
 
 export default function Home() {
   const [homes, setHomes] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
-    regions: [],        // array of selected regions
+    regions: [],
     minPrice: 0,
     maxPrice: 9999999,
-    rooms: null,        // number or null
-    bathrooms: null,    // number or null
+    rooms: null,
+    bathrooms: null,
     peopleDay: null,
     peopleNight: null,
-    pool: null,         // "Փակ" | "Բաց" | "Տաքացվող" | null
-    sleep: null,        // true | false | null
-    advantages: [],     // array of strings
-    stars: null         // number or null
+    pool: null,
+    sleep: null,
+    advantages: [],
+    stars: null
   });
 
   const [filteredHomes, setFilteredHomes] = useState([]);
@@ -39,10 +33,8 @@ export default function Home() {
       try {
         const snapshot = await get(ref(dbRealtime, "homes"));
         if (snapshot.exists()) {
-          // snapshot.val() could be an object keyed by id — convert to array
           const dataObj = snapshot.val();
           let items = Array.isArray(dataObj) ? dataObj : Object.values(dataObj);
-          // Defensive: ensure arrays exist
           items = items.map(h => ({
             ...h,
             advantages: h.advantages || [],
@@ -63,16 +55,11 @@ export default function Home() {
     fetchData();
   }, []);
 
-  // Apply filters immediately whenever filters or homes change
   useEffect(() => {
     let data = [...homes];
-
-    // Regions (multiple)
     if (filters.regions.length) {
       data = data.filter(h => filters.regions.includes(h.addres));
     }
-
-    // Price range
     data = data.filter(h => {
       const price = Number(h.price || 0);
       return price >= Number(filters.minPrice || 0) && price <= Number(filters.maxPrice || 9999999);
@@ -129,7 +116,12 @@ export default function Home() {
       stars: null
     });
   };
-
+  const totalPages = Math.ceil(filteredHomes.length / 10);
+  const paginatedHomes = useMemo(() => {
+    const start = (currentPage - 1) * 10;
+    const end = start + 10;
+    return filteredHomes.slice(start, end);
+  }, [filteredHomes, currentPage]);
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto flex gap-6">
@@ -144,8 +136,7 @@ export default function Home() {
         <div className="flex-1">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-[#53079d]">Արդյունքներ</h1>
-              <p className="text-sm text-gray-500">{filteredHomes.length} արդյունք</p>
+              <h1 className="text-2xl font-bold">Լավագույն առաջարկներ</h1>
             </div>
           </div>
 
@@ -156,7 +147,7 @@ export default function Home() {
               </div>
             )}
 
-            {filteredHomes.map((h, idx) => (
+            {paginatedHomes.map((h, idx) => (
               <div
                 key={h.id || idx}
                 className="bg-white rounded-2xl shadow-md overflow-hidden transition hover:shadow-xl duration-300"
@@ -168,7 +159,7 @@ export default function Home() {
                     modules={[Navigation, Pagination]}
                     className="h-56 rounded-t-2xl"
                   >
-                    {(h.images || []).length ? (
+                    {h.images.length ? (
                       h.images.map((img, i) => (
                         <SwiperSlide key={i}>
                           <img
@@ -186,80 +177,77 @@ export default function Home() {
                       </SwiperSlide>
                     )}
                   </Swiper>
-
-                  {/* Like Button */}
-                  <button className="absolute top-3 right-3 bg-white/80 hover:bg-white p-2 rounded-full shadow-sm">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-gray-600 hover:text-red-500 transition"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 
-               4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 
-               4.5 0 010-6.364z"
-                      />
-                    </svg>
-                  </button>
                 </div>
 
                 <div className="p-4">
-                  {/* Top info */}
                   <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-800">{h.addres}</h3>
-                      <div className="text-sm text-gray-500 mt-1 flex items-center gap-3">
-                        <span className="flex items-center gap-1">
-                          <FaMapMarkerAlt className="text-gray-400" /> {h.addres}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <FaUsers className="text-gray-400" /> {h.peopleCaunt}
-                        </span>
-                      </div>
+                    <div className="flex justify-center gap-3 items-center">
+                      <span className="flex items-center gap-1">
+                        <FaMapMarkerAlt className="text-[#fd993a]" />{" "}
+                        {h.addres}
+                      </span>
+
+                      <span className="flex items-center gap-1">
+                        <FaUsers className="text-gray-400" /> {h.peopleCaunt}
+                      </span>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-orange-100 text-orange-600 px-2 py-1 rounded-lg text-sm font-medium">
-                      <FaStar className="text-orange-500" /> {h.star || 0}
+                    <div className="flex items-center gap-1 bg-[#fd993a] text-white px-2 py-1 rounded-lg text-sm font-medium">
+                      <FaStar className="text-white" /> {h.star || 0}
                     </div>
                   </div>
 
-                  {/* Price */}
                   <div className="mt-3 flex items-center justify-between">
-                    <div className="text-sm text-gray-600">
-                      {h.rooms} սենյակ • {h.tualets} լոգարան
-                    </div>
-                    <div className="text-2xl font-bold text-[#53079d]">
+
+                    <div className="text-[20px] font-bold text-[#575b65] transition">
                       {Number(h.price || 0).toLocaleString()} ֏
                     </div>
                   </div>
 
 
-                  {/* Advantages */}
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {h.baseyn && (
-                      <span className="text-xs px-2 py-1 border border-gray-200 rounded-full bg-gray-50 text-gray-700">
-                        {h.baseyn}
-                      </span>
-                    )}
-                    {(h.advantages || []).slice(0, 4).map((a, i) => (
-                      <span
-                        key={i}
-                        className="text-xs px-2 py-1 border border-gray-200 rounded-full bg-gray-50 text-gray-700"
-                      >
-                        {a}
-                      </span>
-                    ))}
-                  </div>
+
+
                 </div>
               </div>
             ))}
-
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-3 mt-10">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+              >
+                ←
+              </button>
+
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`px-4 py-2 rounded-full ${currentPage === i + 1
+                    ? "bg-[#f97316] text-white font-semibold"
+                    : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              <button
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+              >
+                →
+              </button>
+            </div>
+          )}
+
+
         </div>
       </div>
     </div>

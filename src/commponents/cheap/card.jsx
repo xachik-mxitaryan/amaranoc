@@ -17,7 +17,7 @@ export default function Card({ item }) {
         </button>
       </div>
       <div className="p-4 flex flex-col gap-4">
-        <div className="flex justify-between text-gray-700 text-sm">
+        <div className="flex justify-between text-[#575b65] text-sm">
           <span className="flex items-center gap-2">
             <FaMapMarkerAlt /> {item.location}
           </span>
@@ -27,7 +27,7 @@ export default function Card({ item }) {
         </div>
 
         <div className="flex justify-between items-center">
-          <p className="font-bold text-lg text-gray-900">{item.price} ֏</p>
+          <p className="font-bold text-lg text-[#575b65]">{item.price} ֏</p>
 
           <span className="bg-orange-500 text-white px-3 py-1 rounded-lg text-sm font-semibold">
             ★ {item.rating}
