@@ -1,7 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaPhone, FaEnvelope, FaFacebook, FaGlobe, FaMapMarkerAlt } from "react-icons/fa"
 
-export default function index() {
+export default function Footer() {
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+
+  const [message, setMessage] = useState(null);
+
+  const handleSubmit = () => {
+    if (!name || !phone || !city) {
+      setMessage({ type: "error", text: "Խնդրում ենք լրացնել բոլոր դաշտերը" });
+      return;
+    }
+
+    setMessage({ type: "success", text: "Հայտը հաջողությամբ ուղարկված է" });
+
+    setName("");
+    setPhone("");
+    setCity("");
+  };
+
   return (
     <>
       <footer>
@@ -20,18 +40,43 @@ export default function index() {
               Մուտքագրեք ձեր տվյալները որպեսզի կապվենք Ձեզ հետ
             </p>
 
+            {message && (
+              <div className={`w-full mb-4 text-center py-2 rounded-md 
+                ${message.type === "error" ? "bg-red-500 text-white" : "bg-green-600 text-white"}`}>
+                {message.text}
+              </div>
+            )}
+
             <div className="grid grid-cols-4 items-center lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 w-full justify-center">
 
-              <input type="text" placeholder="Անուն Ազգանուն"
-                className="px-4 py-3 rounded-md bg-transparent border border-gray-400 text-white outline-none w-full" />
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Անուն Ազգանուն"
+                className="px-4 py-3 rounded-md bg-transparent border border-gray-400 text-white outline-none w-full"
+              />
 
-              <input type="text" placeholder="Հեռախոսահամար"
-                className="px-4 py-3 rounded-md bg-transparent border border-gray-400 text-white outline-none w-full" />
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                type="text"
+                placeholder="Հեռախոսահամար"
+                className="px-4 py-3 rounded-md bg-transparent border border-gray-400 text-white outline-none w-full"
+              />
 
-              <input type="text" placeholder="Ք․ քաղաք"
-                className="px-4 py-3 rounded-md bg-transparent border border-gray-400 text-white outline-none w-full" />
+              <input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                type="text"
+                placeholder="Ք․ քաղաք"
+                className="px-4 py-3 rounded-md bg-transparent border border-gray-400 text-white outline-none w-full"
+              />
 
-              <button className="px-8 py-3 bg-[#ff8a00] text-white font-semibold rounded-full shadow-md hover:bg-[#e67a00] transition text-lg w-full sm:w-auto">
+              <button
+                onClick={handleSubmit}
+                className="px-8 py-3 bg-[#ff8a00] text-white font-semibold rounded-full shadow-md hover:bg-[#e67a00] transition text-lg w-full sm:w-auto cursor-pointer"
+              >
                 Ուղարկել
               </button>
 
@@ -39,8 +84,8 @@ export default function index() {
 
           </div>
         </div>
-        <div className="bg-[#101623] w-full pt-10 pb-0 flex flex-col items-center">
 
+        <div className="bg-[#101623] w-full pt-10 pb-0 flex flex-col items-center">
           <h2 className="text-white text-3xl font-bold tracking-widest mb-10 text-center">
             ԿՈՆՏԱԿՏՆԵՐ
           </h2>
@@ -89,5 +134,5 @@ export default function index() {
 
       </footer>
     </>
-  )
+  );
 }

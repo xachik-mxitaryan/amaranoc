@@ -117,6 +117,7 @@ export default function Home() {
       sleep: null,
       advantages: [],
       stars: null,
+      
     });
   };
 
