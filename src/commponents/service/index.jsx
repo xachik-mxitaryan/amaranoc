@@ -158,10 +158,11 @@ const db = {
       body: "Մենք տրամադրում ենք բարձրակարգ փոխադրամիջոցներ՝ ապահովելով Ձեր ճանապարհորդության հարմարավետություն։"
     }
   ]
-}
+};
 
 export default function ServicesBlock() {
   const [active, setActive] = useState("maintenance");
+  const [selectedService, setSelectedService] = useState(null);
 
   const scrollLeft = () => {
     document.getElementById("serviceScroll").scrollBy({
@@ -179,24 +180,18 @@ export default function ServicesBlock() {
 
   return (
     <div className="w-full py-10">
-      <div className="w-full py-8 flex justify-center gap-20  items-center">
+      <div className="w-full py-8 flex justify-center gap-20 items-center">
+        
         <button
           onClick={scrollLeft}
-          className="hover:scale-110 transition border rounded-full p-1 "
+          className="hover:scale-110 transition border rounded-full p-1"
         >
-          <img
-            src="https://amaranoc.am/images/arrow-left.svg"
-            alt="Left Arrow"
-            className="w-6"
-          />
+          <img src="https://amaranoc.am/images/arrow-left.svg" className="w-6" />
         </button>
-          
-
-
 
         <div
           id="serviceScroll"
-          className="flex gap-24 w-[60%]  overflow-x-auto scrollbar-hide py-2"
+          className="flex gap-24 w-[60%] overflow-x-auto scrollbar-hide py-2"
         >
           {services.map((item) => (
             <div
@@ -204,16 +199,12 @@ export default function ServicesBlock() {
               onClick={() => setActive(item.id)}
               className="flex cursor-pointer flex-col items-center text-center"
             >
-              <span
-                className={`${active === item.id ? "text-orange-500" : "text-gray-600"
-                  }`}
-              >
-                <img className="w-[50px] h-[50px]" src={item.icon} alt="" />
-              </span>
+              <img className="w-[50px] h-[50px]" src={item.icon} alt="" />
 
               <p
-                className={`mt-2 text-sm ${active === item.id ? "text-orange-500 font-semibold" : ""
-                  }`}
+                className={`mt-2 text-sm ${
+                  active === item.id ? "text-orange-500 font-semibold" : "text-gray-600"
+                }`}
               >
                 {item.title}
               </p>
@@ -223,15 +214,14 @@ export default function ServicesBlock() {
               )}
             </div>
           ))}
-
         </div>
+
         <button
           onClick={scrollRight}
           className="hover:scale-110 transition border rounded-full p-1"
         >
           <img
             src="https://amaranoc.am/images/arrow-left.svg"
-            alt="Right Arrow"
             className="w-6 rotate-180"
           />
         </button>
@@ -239,10 +229,7 @@ export default function ServicesBlock() {
 
       <div className="max-w-[1300px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-5">
         {db[active]?.map((item) => (
-          <div
-            key={item.id}
-            className="rounded-xl bg-white shadow-xl overflow-hidden"
-          >
+          <div key={item.id} className="rounded-xl bg-white shadow-xl overflow-hidden">
             <img className="w-full h-56 object-cover" src={item.img} alt="" />
             <div className="p-6 text-[#575b65]">
               <h3 className="text-lg font-bold mb-2">{item.title}</h3>
@@ -250,7 +237,11 @@ export default function ServicesBlock() {
 
               <div className="flex items-center justify-between">
                 <span className="font-bold text-lg">{item.price}</span>
-                <button  className="px-6 py-2 bg-orange-500 text-white text-sm rounded-full hover:bg-orange-600 transition cursor-pointer">
+
+                <button
+                  onClick={() => setSelectedService(item)}
+                  className="px-6 py-2 bg-orange-500 text-white text-sm rounded-full hover:bg-orange-600 transition cursor-pointer"
+                >
                   Ամրագրել
                 </button>
               </div>
@@ -258,6 +249,35 @@ export default function ServicesBlock() {
           </div>
         ))}
       </div>
+
+      {selectedService && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 px-4">
+          <div className="bg-white w-full max-w-xl rounded-xl shadow-2xl p-6 relative">
+            
+            <button
+              onClick={() => setSelectedService(null)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"
+            >
+              ×
+            </button>
+
+            <h2 className="text-xl font-bold mb-4">
+              {selectedService.title}
+            </h2>
+
+            <p className="text-gray-700 leading-relaxed mb-6">
+              {selectedService.body}
+            </p>
+
+            <div className="flex items-center justify-between mt-4">
+              <span className="font-bold text-xl">{selectedService.price}</span>
+              <button className="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition">
+                Ամրագրել
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
