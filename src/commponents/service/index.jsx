@@ -190,7 +190,7 @@ export default function ServicesBlock() {
             className="w-6"
           />
         </button>
-
+          
 
 
 
@@ -250,7 +250,7 @@ export default function ServicesBlock() {
 
               <div className="flex items-center justify-between">
                 <span className="font-bold text-lg">{item.price}</span>
-                <button className="px-6 py-2 bg-orange-500 text-white text-sm rounded-full hover:bg-orange-600 transition">
+                <button  className="px-6 py-2 bg-orange-500 text-white text-sm rounded-full hover:bg-orange-600 transition cursor-pointer">
                   Ամրագրել
                 </button>
               </div>
