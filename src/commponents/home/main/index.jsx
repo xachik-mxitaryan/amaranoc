@@ -6,6 +6,7 @@ import Card from "./card";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import Buttons from "../../buttons";
 
 
 export default function Home() {
@@ -133,6 +134,7 @@ export default function Home() {
         />
 
         <div className="flex-1">
+          <Buttons />
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">Լավագույն առաջարկներ</h1>
