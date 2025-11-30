@@ -37,7 +37,7 @@ export default function HomeDetailsPage() {
     if (!home) return <div className="p-10 text-center">Loading...</div>;
 
     return (
-        <div className="max-w-[1400px] flex flex-col gap-70 mx-auto p-4 mt-6">
+        <div className="max-w-[1400px] flex flex-col mx-auto p-4 mt-6">
             <Gallery images={home.images} />
             <div className="grid grid-cols-12 gap-4 mt-6">
                 <div className="col-span-4">
