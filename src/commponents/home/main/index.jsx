@@ -160,8 +160,39 @@ export default function Home() {
                 <button
                   key={item.id}
                   onClick={() => {
-                    setActive(item.id);
-                    setFilters((prev) => ({ ...prev, category: item.id }));
+                    if (active === item.id) {
+                      setActive(null);
+                      setFilters({
+                        regions: [],
+                        minPrice: 0,
+                        maxPrice: 9999999,
+                        rooms: null,
+                        bathrooms: null,
+                        peopleDay: null,
+                        peopleNight: null,
+                        pool: null,
+                        sleep: null,
+                        advantages: [],
+                        stars: null,
+                        category: null,
+                      });
+                    } else {
+                      setActive(item.id);
+                      setFilters({
+                        regions: [],
+                        minPrice: 0,
+                        maxPrice: 9999999,
+                        rooms: null,
+                        bathrooms: null,
+                        peopleDay: null,
+                        peopleNight: null,
+                        pool: null,
+                        sleep: null,
+                        advantages: [],
+                        stars: null,
+                        category: item.id,
+                      });
+                    }
                     setCurrentPage(1);
                   }}
                   className="flex flex-col items-center gap-1 shrink-0 group"
