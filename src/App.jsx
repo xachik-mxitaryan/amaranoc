@@ -7,6 +7,7 @@ import Cheap from './pages/Cheap'
 import Footer from './commponents/home/footer'
 import Service from "./pages/Service";
 import Aboutus from "./pages/Aboutus";
+import House from "./pages/House";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/about" element={<Aboutus />} />
+        <Route path="/home/:id" element={<House />} />
       </Routes>
       <Footer />
     </BrowserRouter>
