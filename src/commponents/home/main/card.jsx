@@ -61,9 +61,6 @@ export default function card({h, idx}) {
                     </div>
                 </div>
 
-
-
-
             </div>
         </div>
     )

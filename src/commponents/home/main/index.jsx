@@ -6,6 +6,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Buttons from "../../buttons";
+import { CiGrid2V } from "react-icons/ci";
+import { BsGrid3X2GapFill } from "react-icons/bs";
 
 export default function Home() {
   const [homes, setHomes] = useState([]);
@@ -13,6 +15,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [active, setActive] = useState(null);
+  const [cardView, setCardView] = useState(3); 
 
   const [filters, setFilters] = useState({
     regions: [],
@@ -52,7 +55,7 @@ export default function Home() {
             ...h,
             advantages: h.advantages || [],
             images: h.images || [],
-            category: h.category || "", 
+            category: h.category || "",
             star: h.star || h.stars || 0,
           }));
 
@@ -117,7 +120,6 @@ export default function Home() {
       sleep: null,
       advantages: [],
       stars: null,
-      
     });
   };
 
@@ -130,7 +132,6 @@ export default function Home() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-
       <div className="max-w-7xl mx-auto flex gap-6">
         <SidebarFilters
           filters={filters}
@@ -143,48 +144,87 @@ export default function Home() {
         <div className="flex-1">
           <Buttons />
 
-      <div className="w-full border-b pb-2 mb-6">
-        <div className="flex items-center gap-6 overflow-x-auto no-scrollbar px-2 py-3">
-          {main.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActive(item.id);
-                const filtered = homes.filter((h) =>
-                  (h.category || "").toLowerCase().includes(item.id.toLowerCase())
-                );
-                setFilteredHomes(filtered.length ? filtered : homes);
-              }}
-              className="flex flex-col items-center gap-1 shrink-0 group"
-            >
-              <img
-                src={item.icon}
-                alt={item.title}
-                className="w-6 h-6 opacity-80 group-hover:opacity-100 transition"
-              />
+          <div className="w-full border-b pb-2 mb-6">
+            <div className="flex items-center gap-6 overflow-x-auto no-scrollbar px-2 py-3">
+              {main.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActive(item.id);
 
-              <span
-                className={`text-xs whitespace-nowrap ${
-                  active === item.id ? "text-black font-medium" : "text-gray-500"
-                }`}
-              >
-                {item.title}
-              </span>
+                    const filtered = homes.filter(
+                      (h) =>
+                        (h.category || "").toLowerCase() ===
+                        item.id.toLowerCase()
+                    );
 
-              <span
-                className={`h-[2px] w-6 mt-1 rounded-full transition ${
-                  active === item.id ? "bg-orange-500" : "bg-transparent group-hover:bg-gray-300"
-                }`}
-              ></span>
-            </button>
-          ))}
-        </div>
-      </div>
-          <div className="mb-4 flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Լավագույն առաջարկներ</h1>
+                    setFilteredHomes(filtered.length ? filtered : homes);
+                  }}
+                  className="flex flex-col items-center gap-1 shrink-0 group"
+                >
+                  <img
+                    src={item.icon}
+                    alt={item.title}
+                    className="w-6 h-6 opacity-80 group-hover:opacity-100 transition"
+                  />
+
+                  <span
+                    className={`text-xs whitespace-nowrap ${
+                      active === item.id
+                        ? "text-black font-medium"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {item.title}
+                  </span>
+
+                  <span
+                    className={`h-[2px] w-6 mt-1 rounded-full transition ${
+                      active === item.id
+                        ? "bg-orange-500"
+                        : "bg-transparent group-hover:bg-gray-300"
+                    }`}
+                  ></span>
+                </button>
+              ))}
+            </div>
+
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="mb-4 flex items-center justify-between">
+            <h1 className="text-2xl font-bold">Լավագույն առաջարկներ</h1>
+            <div className="flex gap-3 mt-2">
+              <button
+                onClick={() => setCardView(2)}
+                className={`p-2 rounded-lg ${
+                  cardView === 2
+                    ? "bg-black text-white"
+                    : "bg-gray-200 hover:bg-gray-300"
+                }`}
+              >
+                <CiGrid2V size={22} />
+              </button>
+
+              <button
+                onClick={() => setCardView(3)}
+                className={`p-2 rounded-lg ${
+                  cardView === 3
+                    ? "bg-black text-white"
+                    : "bg-gray-200 hover:bg-gray-300"
+                }`}
+              >
+                <BsGrid3X2GapFill size={22} />
+              </button>
+            </div>
+          </div>
+
+          <div
+            className={`grid gap-6 ${
+              cardView === 2
+                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            }`}
+          >
             {filteredHomes.length === 0 && (
               <div className="col-span-full text-center text-gray-500 mt-10">
                 Համապատասխան արդյունքներ չեն գտնվել

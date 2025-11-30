@@ -72,7 +72,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Button */}
       <button
         className="md:hidden text-3xl"
         onClick={() => setMenuOpen(!menuOpen)}
