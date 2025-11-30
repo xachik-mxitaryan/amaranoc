@@ -29,6 +29,7 @@ export default function Home() {
     sleep: null,
     advantages: [],
     stars: null,
+    category: null, 
   });
 
   const main = [
@@ -71,6 +72,12 @@ export default function Home() {
 
   useEffect(() => {
     let data = [...homes];
+
+    if (filters.category) {
+      data = data.filter(
+        (h) => (h.category || "").toLowerCase() === filters.category.toLowerCase()
+      );
+    }
 
     if (filters.regions.length) {
       data = data.filter((h) => filters.regions.includes(h.addres));
@@ -120,7 +127,10 @@ export default function Home() {
       sleep: null,
       advantages: [],
       stars: null,
+      category: null,
     });
+    setActive(null);
+    setCurrentPage(1);
   };
 
   const totalPages = Math.ceil(filteredHomes.length / 10);
@@ -151,14 +161,8 @@ export default function Home() {
                   key={item.id}
                   onClick={() => {
                     setActive(item.id);
-
-                    const filtered = homes.filter(
-                      (h) =>
-                        (h.category || "").toLowerCase() ===
-                        item.id.toLowerCase()
-                    );
-
-                    setFilteredHomes(filtered.length ? filtered : homes);
+                    setFilters((prev) => ({ ...prev, category: item.id }));
+                    setCurrentPage(1);
                   }}
                   className="flex flex-col items-center gap-1 shrink-0 group"
                 >
@@ -170,9 +174,7 @@ export default function Home() {
 
                   <span
                     className={`text-xs whitespace-nowrap ${
-                      active === item.id
-                        ? "text-black font-medium"
-                        : "text-gray-500"
+                      active === item.id ? "text-black font-medium" : "text-gray-500"
                     }`}
                   >
                     {item.title}
@@ -188,7 +190,6 @@ export default function Home() {
                 </button>
               ))}
             </div>
-
           </div>
 
           <div className="mb-4 flex items-center justify-between">
@@ -197,9 +198,7 @@ export default function Home() {
               <button
                 onClick={() => setCardView(2)}
                 className={`p-2 rounded-lg ${
-                  cardView === 2
-                    ? "bg-black text-white"
-                    : "bg-gray-200 hover:bg-gray-300"
+                  cardView === 2 ? "bg-black text-white" : "bg-gray-200 hover:bg-gray-300"
                 }`}
               >
                 <CiGrid2V size={22} />
@@ -208,9 +207,7 @@ export default function Home() {
               <button
                 onClick={() => setCardView(3)}
                 className={`p-2 rounded-lg ${
-                  cardView === 3
-                    ? "bg-black text-white"
-                    : "bg-gray-200 hover:bg-gray-300"
+                  cardView === 3 ? "bg-black text-white" : "bg-gray-200 hover:bg-gray-300"
                 }`}
               >
                 <BsGrid3X2GapFill size={22} />
