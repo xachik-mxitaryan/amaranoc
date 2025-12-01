@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Card from "./card";
 
 export default function IndexPage() {
@@ -6,6 +6,9 @@ export default function IndexPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+
+  const visibleRef = useRef(6);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   const discounts = [
     {
@@ -86,6 +89,10 @@ export default function IndexPage() {
       price: "140,000֏",
     },
   ];
+  const showMore = () => {
+    visibleRef.current = Math.min(visibleRef.current + 3, houses.length);
+    setVisibleCount(visibleRef.current);
+  };
 
   const handleOrder = () => {
     if (activePrice === null) {
@@ -105,15 +112,13 @@ export default function IndexPage() {
 
   return (
     <div className="bg-gray-50">
+
       <h2 className="text-center text-4xl font-bold my-10">ՀԱՏՈՒԿ ԶԵՂՉԵՐ</h2>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-10 gap-8">
         {discounts.map((item, index) => (
           <div key={index} className="relative rounded-xl overflow-hidden shadow-lg h-[300px] group">
-            <img
-              src={item.img}
-              alt=""
-              className="w-full h-full object-cover group-hover:scale-105 transition"
-            />
+            <img src={item.img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition" />
             <div className="absolute inset-0 bg-black/50 flex flex-col justify-end p-5 text-white">
               <div className="text-5xl font-extrabold mb-3 drop-shadow-md">{item.percent}</div>
               <div className="font-semibold text-lg mb-1">{item.title}</div>
@@ -126,21 +131,17 @@ export default function IndexPage() {
       <div className="max-w-7xl mx-auto px-4 py-14 grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="bg-white p-10 rounded-2xl shadow-xl">
           <h1 className="text-4xl font-bold leading-snug text-gray-900">
-            Պատվիրի՛ր <span className="text-orange-500">Նվեր քարտ</span> <br />
-            Քո կամ ընկերերիդ համար
+            Պատվիրի՛ր <span className="text-orange-500">Նվեր քարտ</span> <br /> Քո կամ ընկերերիդ համար
           </h1>
           <div className="border-b-2 border-orange-300 my-5 w-40"></div>
           <p className="text-gray-600 text-lg leading-relaxed">
-            Բաց մի թող մեր բացառիկ զեղչի քարտերը։ Եթե պլանավորում ես քո հաջորդ արձակուրդը՝ ընկերներիդ կամ ընտանիքիդ անդամների հետ, մեր զեղչային քարտերը առաջարկում են անգերազանցելի խնայողություններ ամառանոցների և ծառայությունների լայն տեսականիով: Ընտրիր զեղչի չափը քարտի վրա։
+            Բաց մի թող մեր բացառիկ զեղչի քարտերը։
           </p>
         </div>
 
         <div className="rounded-2xl p-10 shadow-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white flex flex-col items-center">
-          <img
-            src="https://amaranoc.am/images/white-logo.svg"
-            alt="Amaranoc logo"
-            className="w-48 mb-10 opacity-90"
-          />
+          <img src="https://amaranoc.am/images/white-logo.svg" className="w-48 mb-10 opacity-90" />
+
           <div className="flex flex-wrap gap-4 justify-center mb-10">
             {prices.map((price, index) => {
               const isActive = activePrice === index;
@@ -159,6 +160,7 @@ export default function IndexPage() {
               );
             })}
           </div>
+
           <button
             onClick={handleOrder}
             className="px-10 py-3 bg-white text-orange-600 font-semibold rounded-full shadow-md hover:bg-gray-100 transition text-lg"
@@ -169,17 +171,23 @@ export default function IndexPage() {
       </div>
 
       <h1 className="text-center text-4xl font-bold my-10">Թեժ առաջարկներ</h1>
+
       <div className="grid grid-cols-1 p-5 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        {houses.map((item) => (
+        {houses.slice(0, visibleCount).map((item) => (
           <Card key={item.id} item={item} />
         ))}
       </div>
 
-      <div className="flex mt-10 w-full items-center justify-center">
-        <button className="px-10 py-3 bg-orange-600 text-white font-semibold rounded-full shadow-md transition text-lg">
-          Ցուցադրել ավելին
-        </button>
-      </div>
+      {visibleCount < houses.length && (
+        <div className="flex mt-10 w-full items-center justify-center">
+          <button
+            onClick={showMore}
+            className="px-10 py-3 bg-orange-600 text-white font-semibold rounded-full shadow-md transition text-lg"
+          >
+            Ցուցադրել ավելին
+          </button>
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -190,10 +198,12 @@ export default function IndexPage() {
             >
               X
             </button>
+
             <h2 className="text-2xl font-bold mb-4">Ուղարկեք նվեր քարտի գնման հայտ</h2>
             <p className="mb-4">
               Ընտրած գումար: <span className="font-semibold">{prices[activePrice]}</span>
             </p>
+
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <input
                 type="text"
@@ -203,6 +213,7 @@ export default function IndexPage() {
                 onChange={(e) => setName(e.target.value)}
                 required
               />
+
               <input
                 type="tel"
                 placeholder="Հեռախոսահամար"
@@ -211,6 +222,7 @@ export default function IndexPage() {
                 onChange={(e) => setPhone(e.target.value)}
                 required
               />
+
               <button
                 type="submit"
                 className="px-6 py-2 bg-orange-600 text-white font-semibold rounded-full shadow-md hover:bg-orange-700 transition"
@@ -221,6 +233,7 @@ export default function IndexPage() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
