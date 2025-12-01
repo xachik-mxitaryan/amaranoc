@@ -8,7 +8,9 @@ import { signOut } from "firebase/auth";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [langMenuOpen, setLangMenuOpen] = useState(false); 
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,7 +35,13 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
-  const languages = ["Հայերեն", "English", "Русский"]; 
+  const languages = ["Հայերեն", "English", "Русский"];
+
+  const handleSearch = () => {
+    if (inputValue.trim() !== "") {
+      navigate(`/home/${inputValue}`);
+      setMenuOpen(false);     }
+  };
 
   return (
     <nav className="w-full bg-white shadow-sm px-6 lg:px-12 py-3 flex items-center justify-between relative">
@@ -91,9 +99,15 @@ export default function Navbar() {
           <input
             type="text"
             placeholder="Որոնում"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="outline-none text-sm px-1 bg-transparent"
           />
-          <span className="text-lg cursor-pointer">🔍</span>
+          <CiSearch
+            onClick={handleSearch}
+            className="text-lg cursor-pointer"
+          />
         </div>
       </div>
 
@@ -155,9 +169,15 @@ export default function Navbar() {
             <input
               type="text"
               placeholder="Որոնում"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               className="outline-none text-sm px-1 bg-transparent"
             />
-            <CiSearch className="text-lg cursor-pointer" />
+            <CiSearch
+              onClick={handleSearch}
+              className="text-lg cursor-pointer"
+            />
           </div>
         </div>
       )}
