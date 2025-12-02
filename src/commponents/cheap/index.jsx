@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import Card from "./card";
+import { Link } from "react-router-dom";
 
 export default function IndexPage() {
   const [activePrice, setActivePrice] = useState(null);
@@ -36,54 +37,63 @@ export default function IndexPage() {
   const houses = [
     {
       id: 1,
+      search:"AT001",
       image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1759149473223--0.33907271602966693image.webp&w=1920&q=75",
       location: "Բջնի",
       price: "40,000֏",
     },
     {
       id: 2,
-      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1753697519352--0.8706588573375771image.webp&w=1920&q=75",
+      search:"AM274",
+      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2F1757515466460--0.09006536425830425image_optimized.webp&w=1920&q=75",
       location: "Օհանավան",
-      price: "75,000֏",
+      price: "85,000֏",
     },
     {
       id: 3,
-      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1758095203425--0.034694092059661896image.webp&w=1920&q=75",
+      search:"AT162",
+      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2F1759490696314--0.3957154714543032image_optimized.webp&w=1920&q=75",
       location: "Ծաղկաձոր",
       price: "75,000֏",
     },
     {
       id: 4,
-      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1759146875412--0.6077182024752312image.webp&w=1920&q=75",
-      location: "Բջնի",
+      search:"AT169",
+      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2F1760189660928--0.10159249890828659image_optimized.webp&w=1920&q=75",
+      location: "Հորս",
       price: "80,000֏",
     },
     {
       id: 5,
+      search:"AM274",
       image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1757515466510--0.9370355470461651image.webp&w=1920&q=75",
       location: "Օհանավան",
       price: "85,000֏",
     },
     {
       id: 6,
-      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1757515466510--0.9370355470461651image.webp&w=1920&q=75",
-      location: "Ծաղկաձոր",
+      search:"AM483",
+      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2F1761737015506--0.12924964220795254image_optimized.webp&w=1920&q=75",
+      location: "Գառնի",
       price: "90,000֏",
     },
     {
       id: 7,
+      search:"AM063",
       image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1712326262412--0.25440242535580326image.webp&w=1920&q=75",
       location: "Նոր Հաճն",
       price: "120,000֏",
     },
     {
       id: 8,
-      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1705829500856--0.9156560389221753image.webp&w=1920&q=75",
-      location: "Ծաղկաձոր",
+      search:"AM133",
+      image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2F1732616461236--0.6541537220629399image_optimized.webp&w=1920&q=75",
+      location: "Ձորաղբյուր",
       price: "130,000֏",
     },
     {
       id: 9,
+      search:"AM239",
       image: "https://amaranoc.am/_next/image?url=https%3A%2F%2Fapi.amaranoc.am%2Fcompressed_images%2Fcompressed_1756396894356--0.17186088991677884image.webp&w=1920&q=75",
       location: "Արզնի",
       price: "140,000֏",
@@ -174,7 +184,9 @@ export default function IndexPage() {
 
       <div className="grid grid-cols-1 p-5 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {houses.slice(0, visibleCount).map((item) => (
+         <Link to={`/home/${item.search}`} key={item.id}>
           <Card key={item.id} item={item} />
+          </Link>
         ))}
       </div>
 
