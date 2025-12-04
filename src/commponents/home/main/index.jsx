@@ -9,7 +9,7 @@ import Buttons from "../../buttons";
 import { CiGrid2V } from "react-icons/ci";
 import { BsGrid3X2GapFill } from "react-icons/bs";
 
-export default function Home() {
+export default function Home({inputValue, setInputValue}) {
   const [homes, setHomes] = useState([]);
   const [filteredHomes, setFilteredHomes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,6 +31,20 @@ export default function Home() {
     stars: null,
     category: null, 
   });
+
+  useEffect(() => {
+    if (inputValue && inputValue.trim() !== "") {
+      const filtered = homes.filter((h) => 
+        (h.id && h.id.toString().toLowerCase().includes(inputValue.toLowerCase())) || 
+        (h.addres && h.addres.toLowerCase().includes(inputValue.toLowerCase())) ||
+        (h.category && h.category.toLowerCase().includes(inputValue.toLowerCase()))
+      );
+      setFilteredHomes(filtered);
+      setCurrentPage(1); 
+    } else {
+      setFilteredHomes(homes);
+    }
+  }, [inputValue, homes]);
 
   const main = [
     { id: "mansion", title: "Առանձնատներ", icon: "https://api.amaranoc.am/home.svg" },
@@ -149,6 +163,7 @@ export default function Home() {
           homes={homes}
           regionsList={regionsList}
           resetFilters={resetFilters}
+          setInputValue={setInputValue}
         />
 
         <div className="flex-1">
@@ -245,7 +260,6 @@ export default function Home() {
               </button>
             </div>
           </div>
-
           <div
             className={`grid gap-6 ${
               cardView === 2

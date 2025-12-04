@@ -6,10 +6,10 @@ import { GoPeople } from "react-icons/go";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import { signOut } from "firebase/auth";
 
-export default function Navbar() {
+export default function Navbar({setInputValue, inputValue}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,12 +36,6 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   const languages = ["Հայերեն", "English", "Русский"];
-
-  const handleSearch = () => {
-    if (inputValue.trim() !== "") {
-      navigate(`/home/${inputValue}`);
-      setMenuOpen(false);     }
-  };
 
   return (
     <nav className="w-full bg-white shadow-sm px-6 lg:px-12 py-3 flex items-center justify-between relative">
@@ -101,11 +95,9 @@ export default function Navbar() {
             placeholder="Որոնում"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="outline-none text-sm px-1 bg-transparent"
           />
           <CiSearch
-            onClick={handleSearch}
             className="text-lg cursor-pointer"
           />
         </div>
@@ -169,7 +161,6 @@ export default function Navbar() {
             <input
               type="text"
               placeholder="Որոնում"
-              value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               className="outline-none text-sm px-1 bg-transparent"

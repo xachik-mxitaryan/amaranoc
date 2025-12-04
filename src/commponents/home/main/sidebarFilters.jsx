@@ -2,7 +2,7 @@ import React from "react";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import Chip from "./chip";
 
-export default function SidebarFilters({ filters, setFilters, homes, regionsList = [], resetFilters }) {
+export default function SidebarFilters({ filters, setFilters, homes, regionsList = [], resetFilters, setInputValue }) {
 
   const advantagesList = Array.from(new Set(homes.flatMap(h => h.advantages || [])));
 
@@ -13,26 +13,31 @@ export default function SidebarFilters({ filters, setFilters, homes, regionsList
     const arr = filters.regions || [];
     const next = arr.includes(region) ? arr.filter(r => r !== region) : [...arr, region];
     setFilters({ ...filters, regions: next });
+    setInputValue('')
   };
-
+  
   const toggleAdvantage = (adv) => {
     const arr = filters.advantages || [];
     const next = arr.includes(adv) ? arr.filter(a => a !== adv) : [...arr, adv];
     setFilters({ ...filters, advantages: next });
+    setInputValue('')
   };
-
+  
   const toggleChipValue = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: prev[key] === value ? null : value }));
+    setInputValue('')
   };
-
+  
   const setNumeric = (key, val) => {
     setFilters(prev => ({ ...prev, [key]: val === "" ? null : Number(val) }));
+    setInputValue('')
   };
-
+  
   const incDec = (key, inc = 1) => {
     const cur = Number(filters[key] || 0);
     const next = Math.max(0, cur + inc);
     setFilters(prev => ({ ...prev, [key]: next || null }));
+    setInputValue('')
   };
 
   return (
