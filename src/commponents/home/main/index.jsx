@@ -9,13 +9,13 @@ import Buttons from "../../buttons";
 import { CiGrid2V } from "react-icons/ci";
 import { BsGrid3X2GapFill } from "react-icons/bs";
 
-export default function Home({inputValue, setInputValue}) {
+export default function Home({ inputValue, setInputValue }) {
   const [homes, setHomes] = useState([]);
   const [filteredHomes, setFilteredHomes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const [active, setActive] = useState(null);
-  const [cardView, setCardView] = useState(3); 
+  const [cardView, setCardView] = useState(3);
 
   const [filters, setFilters] = useState({
     regions: [],
@@ -29,18 +29,57 @@ export default function Home({inputValue, setInputValue}) {
     sleep: null,
     advantages: [],
     stars: null,
-    category: null, 
+    category: null,
   });
 
   useEffect(() => {
+    const savedFilters = localStorage.getItem("homeFilters");
+    if (savedFilters) {
+      const parsed = JSON.parse(savedFilters);
+      setFilters(parsed);
+      setActive(parsed.category || null);
+    }
+
+    const savedView = localStorage.getItem("cardView");
+    if (savedView) setCardView(Number(savedView));
+
+    const savedInput = localStorage.getItem("inputValue");
+    if (savedInput) setInputValue(savedInput);
+
+    const savedPage = localStorage.getItem("homePage");
+    if (savedPage) setCurrentPage(Number(savedPage));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("homeFilters", JSON.stringify(filters));
+  }, [filters]);
+
+  useEffect(() => {
+    localStorage.setItem("activeCategory", active);
+  }, [active]);
+
+  useEffect(() => {
+    localStorage.setItem("cardView", cardView);
+  }, [cardView]);
+
+  useEffect(() => {
+    localStorage.setItem("inputValue", inputValue || "");
+  }, [inputValue]);
+
+  useEffect(() => {
+    localStorage.setItem("homePage", currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
     if (inputValue && inputValue.trim() !== "") {
-      const filtered = homes.filter((h) => 
-        (h.id && h.id.toString().toLowerCase().includes(inputValue.toLowerCase())) || 
-        (h.addres && h.addres.toLowerCase().includes(inputValue.toLowerCase())) ||
-        (h.category && h.category.toLowerCase().includes(inputValue.toLowerCase()))
+      const filtered = homes.filter(
+        (h) =>
+          (h.id && h.id.toString().toLowerCase().includes(inputValue.toLowerCase())) ||
+          (h.addres && h.addres.toLowerCase().includes(inputValue.toLowerCase())) ||
+          (h.category && h.category.toLowerCase().includes(inputValue.toLowerCase()))
       );
       setFilteredHomes(filtered);
-      setCurrentPage(1); 
+      setCurrentPage(1);
     } else {
       setFilteredHomes(homes);
     }
@@ -123,13 +162,15 @@ export default function Home({inputValue, setInputValue}) {
     setFilteredHomes(data);
   }, [filters, homes]);
 
+
   const regionsList = useMemo(() => {
     const setR = new Set(homes.map((h) => h.addres).filter(Boolean));
     return Array.from(setR);
   }, [homes]);
 
+
   const resetFilters = () => {
-    setFilters({
+    const reset = {
       regions: [],
       minPrice: 0,
       maxPrice: 9999999,
@@ -142,10 +183,16 @@ export default function Home({inputValue, setInputValue}) {
       advantages: [],
       stars: null,
       category: null,
-    });
+    };
+
+    setFilters(reset);
     setActive(null);
     setCurrentPage(1);
+
+    localStorage.setItem("homeFilters", JSON.stringify(reset));
+    localStorage.setItem("activeCategory", "");
   };
+
 
   const totalPages = Math.ceil(filteredHomes.length / 10);
 
@@ -153,6 +200,7 @@ export default function Home({inputValue, setInputValue}) {
     const start = (currentPage - 1) * 10;
     return filteredHomes.slice(start, start + 10);
   }, [filteredHomes, currentPage]);
+
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -177,38 +225,15 @@ export default function Home({inputValue, setInputValue}) {
                   onClick={() => {
                     if (active === item.id) {
                       setActive(null);
-                      setFilters({
-                        regions: [],
-                        minPrice: 0,
-                        maxPrice: 9999999,
-                        rooms: null,
-                        bathrooms: null,
-                        peopleDay: null,
-                        peopleNight: null,
-                        pool: null,
-                        sleep: null,
-                        advantages: [],
-                        stars: null,
-                        category: null,
-                      });
+                      resetFilters();
                     } else {
                       setActive(item.id);
-                      setFilters({
-                        regions: [],
-                        minPrice: 0,
-                        maxPrice: 9999999,
-                        rooms: null,
-                        bathrooms: null,
-                        peopleDay: null,
-                        peopleNight: null,
-                        pool: null,
-                        sleep: null,
-                        advantages: [],
-                        stars: null,
+                      setFilters((prev) => ({
+                        ...prev,
                         category: item.id,
-                      });
+                      }));
+                      setCurrentPage(1);
                     }
-                    setCurrentPage(1);
                   }}
                   className="flex flex-col items-center gap-1 shrink-0 group"
                 >
@@ -238,7 +263,7 @@ export default function Home({inputValue, setInputValue}) {
             </div>
           </div>
 
-          <div className="mb-4 flex items-center justify-between">
+         <div className="mb-4 flex items-center justify-between">
             <h1 className="text-2xl font-bold">Լավագույն առաջարկներ</h1>
             <div className="flex gap-3 mt-2">
               <button
@@ -260,7 +285,8 @@ export default function Home({inputValue, setInputValue}) {
               </button>
             </div>
           </div>
-          <div
+
+         <div
             className={`grid gap-6 ${
               cardView === 2
                 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
