@@ -5,6 +5,7 @@ import Chip from "./chip";
 export default function SidebarFilters({ filters, setFilters, homes, regionsList = [], resetFilters, setInputValue }) {
 
   const advantagesList = Array.from(new Set(homes.flatMap(h => h.advantages || [])));
+  const addresList = Array.from(new Set(homes.flatMap(h => h.addres || [])));
 
   const poolOptions = ["Փակ", "Բաց", "Տաքացվող"];
   const roomOptions = [1, 2, 3, 4, 5, '6+'];
@@ -45,8 +46,8 @@ export default function SidebarFilters({ filters, setFilters, homes, regionsList
       <div className="mb-4">
         <div className="text-sm font-semibold mb-2">Տարածաշրջան</div>
         <div className="space-y-1 max-h-36 overflow-auto pr-1">
-          {regionsList.length === 0 && <div className="text-xs text-gray-400">Տվյալներ լռվաց չեն</div>}
-          {regionsList.map((r, i) => (
+          {addresList.length === 0 && <div className="text-xs text-gray-400">Տվյալներ լռվաց չեն</div>}
+          {addresList.map((r, i) => (
             <label key={i} className="flex items-center gap-2 text-sm">
               <input
                 type="checkbox"
@@ -54,7 +55,7 @@ export default function SidebarFilters({ filters, setFilters, homes, regionsList
                 onChange={() => toggleRegion(r)}
                 className="h-4 w-4 rounded"
               />
-              <span>{r}</span>
+              <span>{r}  {homes.filter(el=>el.addres == r && (filters.category ? el.category == filters.category : true)).length}</span>
             </label>
           ))}
         </div>
